@@ -1,8 +1,10 @@
 # service-testnet
 
+Sends test transactions to the www.better-banking.io servers.
+
 To run either:
 
-* ./mvn clean package && java -jar target/testnet-server-0.9.1.jar
+* ./mvnw clean package && java -jar target/testnet-server-0.9.1.jar
 
 or
 
