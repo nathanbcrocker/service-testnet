@@ -8,6 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static co.uk.bankcorp.core.utils.Constants.MULTIPLIER;
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class DynamicOBReadTransaction6Repository implements OBReadTransaction6Repository {
@@ -33,26 +38,24 @@ public class DynamicOBReadTransaction6Repository implements OBReadTransaction6Re
         return Optional.of(transaction);
     }
 
-    private List<OBTransaction6> build(final int tCount, final String accountId) {
-        var data = new ArrayList<OBTransaction6>();
+    private List<OBTransaction6> build(final int transactionCount, final String accountId) {
         var transactionIdBase = new Random().nextInt(20000);
-        for (int i = 0; i < tCount; i++) {
-            double amount = new Random().nextDouble() * 1000;
-            int merchant = new Random().nextInt(merchantNames.length);
-            var t =
-                    TransactionAdapter
-                            .OBTransaction6Builder
-                            .transaction(accountId)
-                            .transactionId(String.valueOf(transactionIdBase + i))
-                            .amount(amount * Constants.MULTIPLIER)
-                            .creditOrDebit(creditOrDebit())
-                            .exchangeRate("USD", 1 * Constants.MULTIPLIER)
-                            .merchantDetails(merchantNames[merchant], merchants.get(merchantNames[merchant]))
-                            .build();
-            data.add(t);
-        }
-
-        return data;
+        return IntStream.rangeClosed(0, transactionCount)
+                .mapToObj(i -> {
+                    double amount = new Random().nextDouble() * 500.00;
+                    int merchant = new Random().nextInt(merchantNames.length);
+                    return
+                            TransactionAdapter
+                                    .external()
+                                    .transaction(accountId)
+                                    .transactionId(String.valueOf(transactionIdBase + i))
+                                    .amount(amount * MULTIPLIER)
+                                    .creditOrDebit(creditOrDebit())
+                                    .exchangeRate("USD", MULTIPLIER)
+                                    .merchantDetails(merchantNames[merchant], merchants.get(merchantNames[merchant]))
+                                    .build();
+                })
+                .collect(toList());
     }
 
     private Integer accountIdAsInteger(final String accountId) {

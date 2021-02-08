@@ -54,7 +54,7 @@ public class TransactionAdapter {
     }
 
     private Transaction map(final OBTransaction6 t) {
-        return TransactionBuilder
+        return internal()
                 .transaction(t.getAccountId())
                 .transactionId(t.getTransactionId())
                 .amount(Double.parseDouble(t.getAmount().getAmount()))
@@ -68,7 +68,7 @@ public class TransactionAdapter {
     }
 
     private OBTransaction6 map(final Transaction t) {
-        return OBTransaction6Builder
+        return external()
                 .transaction(t.getAccountId())
                 .transactionId(t.getId())
                 .amount(t.getAmount())
@@ -79,15 +79,17 @@ public class TransactionAdapter {
                 .build();
     }
 
-    public static class TransactionBuilder {
-        public static TransactionBuilder transaction(final String accountId) {
-            var builder = new TransactionBuilder();
-            builder.transaction = new Transaction();
-            builder.transaction.setAccountId(accountId);
-            return builder;
+    public static class internal {
+        public internal() {
+            transaction = new Transaction();
         }
 
-        public TransactionBuilder transactionId(final Long transactionId) {
+        public internal transaction(final String accountId) {
+            transaction.setAccountId(accountId);
+            return this;
+        }
+
+        public internal transactionId(final Long transactionId) {
             if (transactionId != null) {
                 transaction.setId(transactionId);
             }
@@ -95,7 +97,7 @@ public class TransactionAdapter {
             return this;
         }
 
-        public TransactionBuilder transactionId(final String transactionId) {
+        public internal transactionId(final String transactionId) {
             if (transactionId != null) {
                 transaction.setId(Long.getLong(transactionId));
             }
@@ -103,29 +105,29 @@ public class TransactionAdapter {
             return this;
         }
 
-        public TransactionBuilder amount(final double amount) {
+        public internal amount(final double amount) {
             transaction.setAmount((long)Math.round(amount * Constants.MULTIPLIER));
             return this;
         }
 
-        public TransactionBuilder creditOrDebit(final String type) {
+        public internal creditOrDebit(final String type) {
             transaction.setType(type);
             return this;
         }
 
-        public TransactionBuilder exchangeRate(final String currency, final double rate) {
+        public internal exchangeRate(final String currency, final double rate) {
             transaction.setCurrency(currency);
             transaction.setExchangeRate((long)Math.round(rate * Constants.MULTIPLIER));
             return this;
         }
 
-        public TransactionBuilder merchantDetails(final String merchantName, final String merchantCategoryCode) {
+        public internal merchantDetails(final String merchantName, final String merchantCategoryCode) {
             transaction.setMerchantName(merchantName);
             transaction.setMerchantCategoryCode(merchantCategoryCode);
             return this;
         }
 
-        public TransactionBuilder date(final Date date) {
+        public internal date(final Date date) {
             transaction.setDate(date);
             return this;
         }
@@ -137,31 +139,42 @@ public class TransactionAdapter {
         private Transaction transaction;
     }
 
-    public static class OBTransaction6Builder {
-        public static OBTransaction6Builder transaction(final String accountId) {
-            var builder = new OBTransaction6Builder();
-            builder.transaction = new OBTransaction6();
+    public static external external() {
+        return new external();
+    }
+
+    public static internal internal() {
+        return new internal();
+    }
+
+    public static class external {
+        protected external() {
+            transaction = new OBTransaction6();
+        }
+
+        public external transaction(final String accountId) {
+            var builder = new external();
             builder.transaction.setAccountId(accountId);
             return builder;
         }
 
-        public OBTransaction6Builder transactionId(final long transactionId) {
+        public external transactionId(final long transactionId) {
             return transactionId(String.valueOf(transactionId));
         }
 
-        public OBTransaction6Builder transactionId(final String transactionId) {
+        public external transactionId(final String transactionId) {
             transaction.setTransactionId(transactionId);
             return this;
         }
 
-        public OBTransaction6Builder amount(final double amount) {
+        public external amount(final double amount) {
             var a = new OBActiveOrHistoricCurrencyAndAmount9();
             a.setAmount(df.format(amount / Constants.MULTIPLIER));
             this.transaction.setAmount(a);
             return this;
         }
 
-        public OBTransaction6Builder exchangeRate(final String currency, final long rate) {
+        public external exchangeRate(final String currency, final long rate) {
             if (this.transaction.getAmount() != null) {
                 this.transaction.getAmount().setCurrency(currency);
             }
@@ -175,13 +188,13 @@ public class TransactionAdapter {
             return this;
         }
 
-        public OBTransaction6Builder creditOrDebit(final String type) {
+        public external creditOrDebit(final String type) {
             var c = OBCreditDebitCode1.fromValue(type);
             this.transaction.setCreditDebitIndicator(c);
             return this;
         }
 
-        public OBTransaction6Builder merchantDetails(final String merchantName, final String merchantCategoryCode) {
+        public external merchantDetails(final String merchantName, final String merchantCategoryCode) {
             var m = new OBMerchantDetails1();
             m.setMerchantName(merchantName);
             m.setMerchantCategoryCode(merchantCategoryCode);
@@ -189,7 +202,7 @@ public class TransactionAdapter {
             return this;
         }
 
-        public OBTransaction6Builder date(final Date date) {
+        public external date(final Date date) {
             transaction.setBookingDateTime(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.systemDefault()));
             return this;
         }
