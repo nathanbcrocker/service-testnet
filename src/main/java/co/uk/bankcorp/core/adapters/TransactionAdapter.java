@@ -63,7 +63,7 @@ public class TransactionAdapter {
                         t.getCurrencyExchange().getExchangeRate().doubleValue())
                 .merchantDetails(t.getMerchantDetails().getMerchantName(),
                         t.getMerchantDetails().getMerchantCategoryCode())
-                .date(t.getBookingDateTime() == null ? new Date() : new Date(t.getBookingDateTime().toLocalDate().toEpochDay()))
+                .date(t.getValueDateTime() == null ? new Date() : new Date(t.getValueDateTime().toLocalDate().toEpochDay()))
                 .build();
     }
 
@@ -203,7 +203,7 @@ public class TransactionAdapter {
         }
 
         public external date(final Date date) {
-            transaction.setBookingDateTime(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.systemDefault()));
+            transaction.setValueDateTime(OffsetDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.systemDefault()));
             return this;
         }
 
