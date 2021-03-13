@@ -6,13 +6,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableJpaRepositories
 @EnableSwagger2
 @EnableResourceServer
-@ComponentScan(basePackages = { "co.uk.bankcorp", "co.uk.bankcorp.api" , "co.uk.bankcorp.configuration"})
+@ComponentScan(basePackages = { "co.uk.bankcorp", "co.uk.bankcorp.port.api", "co.uk.bankcorp.configuration"})
 public class TestnetApplication implements CommandLineRunner {
 
     @Override
