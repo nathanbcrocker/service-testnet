@@ -4,7 +4,7 @@ Sends test transactions to the www.better-banking.io servers.
 
 To run either:
 
-* ./gradlew clean build && docker-compose up
+* ./gradlew clean build docker && docker-compose up
 
 or
 

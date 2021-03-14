@@ -1,10 +1,10 @@
 version: "3.8"
 services:
-  mysql:
-    container_name: mysql
+  acme-banking-db:
+    container_name: acme-banking-db
     image: 'mysql/mysql-server:latest'
     ports:
-      - 3306:3306
+      - 3308:3306
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_ROOT_HOST=%
@@ -17,13 +17,14 @@ services:
       - 8080:8080
     restart: on-failure
     depends_on:
-      mysql:
+      acme-banking-db:
         condition: service_healthy
     environment:
       - co.uk.bankcorp.client=better-banking
       - co.uk.bankcorp.secret=7yrbR8XpY45bcKPP
-      - MYSQL_HOST=mysql
+      - MYSQL_HOST=acme-banking-db
       - DATABASE_USER=root
       - DATABASE_PASSWORD=123456
       - DATABASE_NAME=acme
       - DATABASE_PORT=3306
+      - SERVER_PORT=8080
