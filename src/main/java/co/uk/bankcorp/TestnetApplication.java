@@ -1,5 +1,7 @@
 package co.uk.bankcorp;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -35,6 +37,5 @@ public class TestnetApplication implements CommandLineRunner {
         public int getExitCode() {
             return 10;
         }
-
     }
 }
