@@ -53,6 +53,7 @@ public class DynamicOBReadTransaction6Repository implements OBReadTransaction6Re
                                     .creditOrDebit(creditOrDebit())
                                     .exchangeRate("USD", MULTIPLIER)
                                     .merchantDetails(merchantNames[merchant], merchants.get(merchantNames[merchant]))
+                                    .date(new Date())
                                     .build();
                 })
                 .collect(toList());
@@ -69,7 +70,7 @@ public class DynamicOBReadTransaction6Repository implements OBReadTransaction6Re
     private String creditOrDebit() {
         double dist = new Random().nextDouble();
         var type = dist >= .9 ? "Credit" : "Debit";
-        return type;
+        return type == null ? "Credit" : type;
     }
 
     private Map<String, String> merchants = Map.of("Acme", "5099", "Globex", "5169", "Morley", "5411", "Contoso", "5137");

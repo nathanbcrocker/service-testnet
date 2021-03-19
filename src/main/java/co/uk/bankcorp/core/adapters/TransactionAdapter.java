@@ -189,7 +189,7 @@ public class TransactionAdapter {
         }
 
         public external creditOrDebit(final String type) {
-            var c = OBCreditDebitCode1.fromValue(type);
+            var c = OBCreditDebitCode1.valueOf(type);
             this.transaction.setCreditDebitIndicator(c);
             return this;
         }
